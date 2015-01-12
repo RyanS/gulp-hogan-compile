@@ -29,6 +29,7 @@ module.exports = function(dest, options) {
         newLine: gutil.linefeed,
         wrapper: 'amd',
         templateOptions: {},
+        templateVariableName: "templates",
         templateName: function(file) {
             return path.join(
                 path.dirname(file.relative),
@@ -63,15 +64,15 @@ module.exports = function(dest, options) {
         }
         var lines = [];
         for (var name in templates) {
-            lines.push('    templates[\'' + name + '\'] = new Hogan.Template(' + templates[name] + ');');
+            lines.push('    ' + options.templateVariableName + '[\'' + name + '\'] = new Hogan.Template(' + templates[name] + ');');
         }
         // Unwrapped
-        lines.unshift('    var templates = {};');
+        lines.unshift('    var ' + options.templateVariableName + ' = {};');
 
         // All wrappers require a hogan module
         if (options.wrapper) {
             lines.unshift('    var Hogan = require(\'' + options.hoganModule  + '\');');
-            lines.push('    return templates;');
+            lines.push('    return ' + options.templateVariableName + ';');
         }
         // AMD wrapper
         if (options.wrapper === 'amd') {
