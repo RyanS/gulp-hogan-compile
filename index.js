@@ -67,7 +67,7 @@ module.exports = function(dest, options) {
             lines.push('    ' + options.templateVariableName + '[\'' + name + '\'] = new Hogan.Template(' + templates[name] + ');');
         }
         // Unwrapped
-        lines.unshift('    var ' + options.templateVariableName + ' = {};');
+        lines.unshift('    var ' + options.templateVariableName + ' = ' + options.templateVariableName + ' || {};');
 
         // All wrappers require a hogan module
         if (options.wrapper) {
