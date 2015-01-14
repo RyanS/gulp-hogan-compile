@@ -59,8 +59,9 @@ module.exports = function(dest, options) {
 
     function endStream(){
         // If no templates or dest is an object nothing more to do
-        if (templates.length === 0 || typeof dest === 'object') {
-            return this.emit('end');
+        if (Object.keys(templates).length === 0 || typeof dest === 'object') {
+            this.emit('data');
+            return this.emit("end");
         }
         var lines = [];
         for (var name in templates) {

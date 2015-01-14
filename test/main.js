@@ -23,6 +23,15 @@ describe('gulp-compile-hogan', function() {
     }
 
     describe('compile()', function() {
+        it('should handle empty compile gracefully', function(done) {
+            var stream = compile('asdfasfasdf.js');
+            stream.on('data', function(newFile){
+                should.not.exist(newFile);
+                done();
+            });
+            stream.end();
+        });
+
         it('should compile templates into one file', function(done) {
             var stream = compile('test.js');
             stream.on('data', function(newFile){
@@ -63,7 +72,7 @@ describe('gulp-compile-hogan', function() {
                 var lines = newFile.contents.toString().split(gutil.linefeed);
                 lines[0].should.equal('define(function(require) {');
                 lines[1].should.equal('    var Hogan = require(\'hogan\');');
-                lines[2].should.equal('    var templates = {};');
+                lines[2].should.equal('    var templates = templates || {};');
                 lines[3].should.match(/templates\['foo\/file1'\] = new Hogan.Template/);
                 lines[4].should.match(/templates\['file2'\] = new Hogan.Template/);
                 lines.pop().should.equal('})');
@@ -83,7 +92,7 @@ describe('gulp-compile-hogan', function() {
                 var lines = newFile.contents.toString().split(gutil.linefeed);
                 lines[0].should.equal('module.exports = (function() {');
                 lines[1].should.equal('    var Hogan = require(\'hogan\');');
-                lines[2].should.equal('    var templates = {};');
+                lines[2].should.equal('    var templates = templates || {};');
                 lines[3].should.match(/templates\['file1'\] = new Hogan.Template/);
                 lines[4].should.match(/templates\['file2'\] = new Hogan.Template/);
                 lines.pop().should.equal('})();');
